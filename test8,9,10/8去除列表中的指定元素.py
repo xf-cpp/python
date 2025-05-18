@@ -19,7 +19,9 @@ def best_remove_b(a, b):
 
 
 if __name__ == '__main__':
-
+    """
+        test
+    """
     a = [1, 3, 1, 5, 7, 9, 11]
     b = [1, 5, 11]
     c = best_remove_b(a, b)

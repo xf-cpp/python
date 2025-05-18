@@ -1,0 +1,166 @@
+default:  #默认配置
+  zhu:  #主网
+    line_thinning: false  #是否细化
+    line_length_threshold: 5 #检测长度大于阀值的线段
+    noise_rect_kernel: 40  #去除有颜色的大矩形框  remove_rect
+    isolate_small_line_threshold: 20  #孤立小线段阀值
+    gray_op:  # 灰度操作
+      is_close_op: false  # 是否要闭操作
+      close_op_kernel: 3  # 闭操作核大小
+      binary_threshold: 20 #二值化阀值  get_gray_image
+    remove_text:  # 去除文本
+      special_words: [] #Box包含指定的文字时，只保留线的颜色，如果为空Box抹黑
+      line_colors: [] #提取指定颜色的线段
+    merge_parallel_line:  #合并平行线
+      max_parallel_threshold: 25  #合并平行线阀值，在这个阀值内的平行线判断是否合并  optimize_main_lines  distance_threshold
+      min_parallel_threshold: 10  #平行线间距不大于这个阀值直接合并
+      limit_length: 10000  #合并不大于这个阀值的平行线
+      max_distance_threshold: 15  # 线段拼接的最大间隙距离
+      color_ratio: 0.6   #白色色域占比最大矩形框
+    repair_line_by_box:  #修复box截断的线段
+      max_gap_threshold: 25  #线段与Box的间隙阀值
+      parallel_threshold: 10  #线段间的平行阀值
+    repair_intersect_line:  #修正有间隙的水平与垂直线
+      max_gap_threshold: 30  #垂直相交线阀值
+      min_gap_threshold: 4  #垂直相交线不大于这个阀值直接拼接
+      output_line_ratio: 0.01  #出线头长度占线长度比例，如果不大于这个阀值将去除 1/100
+      color_ratio: 0.5  #间隙黑色大于这个值不拼接
+    repair_broken_line:  #修复折线断线
+      max_gap_threshold: 30  #折线间距
+    remove_text_isolate_lines: #去除孤立线段
+      contour_area_ratio: 0.00015  #如果轮廓面积占图片面积的比例小于该值为独立轮廓
+      contour_perimeter_ratio: 0.25  #如果轮廓周长占图片周长的比例小于该值为独立轮廓
+    get_bus_main_from_thicker_line:
+      kernel_for_morphology: 20  #形态学操作核大小
+      kernel_for_remove_rect : 50
+      ratio_of_busrect_w_and_imgw: 0.06 #母线外接矩形框宽的限制减小
+      retio_of_busrect_w_and_h: 0.75 #母线外接矩形框宽高的比例 用于保证母线外接矩形框的细长
+      iretations_for_close1: 4  #闭操作次数 用于填充母线中的空洞
+      iretations_for_open: 2  #开操作次数 去除细线留下母线
+      iretations_for_close2: 3  #闭操作次数 膨胀细化后留下的母线
+      offset_for_busrect_w_h: 24  # 调整母线矩形框右下位置 为下面左上角绝对值的两倍
+      offset_for_busrect_left_top: -12 #调整母线矩形框左上角位置 (要求负数)
+    is_line_linked_box:
+      offset: 0 #器元框左上和右下扩张的像素值
+      offset_for_DGGROUND: 9 #接地刀闸左上和右下扩张的像素值
+      line_gap_threshold: 10  #水平竖直线段上下延长的阈值
+    get_main_buses:
+      prefix: ['(?!)']  #前缀 (?!)表示不可能匹配成功
+      suffix: ['母线$','母$']     #后缀为母线或母 匹配不能用match ,match要求从开始位置开始匹配， 用search从任意位置开始匹配以母线或者母结尾的字符串 $表示结尾
+      num_of_selected_buses: 10  #从T结点数量和长度交集筛选的待选母线数量
+      distance_between_Mpower_text_box_and_buses: 300 #母线文本框和线段端点， 间隔距离
+  pei:  #配网
+    line_thinning: false  #是否细化
+    is_use_remove_sign_of_delete: true
+    line_length_threshold: 5 #检测长度大于阀值的线段
+    binary_threshold: 20 #二值化阀值  get_gray_image
+    noise_rect_kernel: 40  #去除有颜色的大矩形框  remove_rect
+    isolate_small_line_threshold: 10  #孤立小线段阀值
+    gray_op:  # 灰度操作
+      is_close_op: true  # 是否要闭操作
+      close_op_kernel: 3  # 闭操作核大小
+      binary_threshold: 20 #二值化阀值  get_gray_image
+    remove_text: #去除文本
+      special_words: [] #Box包含指定的文字时，只保留线的颜色，如果为空Box抹黑
+      line_colors: [] #提取指定颜色的线段
+    merge_parallel_line:  #合并平行线
+      max_parallel_threshold: 15  #合并平行线阀值，在这个阀值内的平行线判断是否合并  optimize_main_lines  distance_threshold
+      min_parallel_threshold: 4  #平行线间距不大于这个阀值直接合并
+      limit_length: 40  #合并不大于这个阀值的平行线
+      max_distance_threshold: 15  #线段拼接的最大间隙距离
+      color_ratio: 0.75
+    repair_line_by_box: #修复box截断的线段
+      max_gap_threshold: 15  #线段与Box的间隙阀值
+      parallel_threshold: 10  # 线段间的平行阀值
+    repair_intersect_line: #修正有间隙的水平与垂直线
+      max_gap_threshold: 15  #垂直相交线阀值
+      min_gap_threshold: 5  #垂直相交线不大于这个阀值直接拼接
+      output_line_ratio: 0.01  #出线头长度占线长度比例，如果不大小这个阀值将去除  1/100
+      color_ratio: 0.5  #间隙黑色大于这个值不拼接
+    repair_broken_line: #修复折线断线
+      max_gap_threshold: 15 #折线间距
+    remove_text_isolate_lines: #去除孤立线段
+      contour_area_ratio: 0.00015  #如果轮廓面积占图片面积的比例小于该值为独立轮廓
+      contour_perimeter_ratio: 0.25  #如果轮廓周长占图片周长的比例小于该值为独立轮廓
+    is_line_linked_box:
+      offset: 0 #器元框左上和右下扩张的像素值
+      offset_for_DGGROUND: 9 #接地刀闸左上和右下扩张的像素值
+      line_gap_threshold: 10  #水平竖直线段上下延长的阈值
+
+"230100":  #黑龙江哈尔滨电网
+  pei:
+    line_thinning: false  #是否细化
+    isolate_small_line_threshold: 5
+    noise_rect_kernel: 40
+    line_color: []
+    merge_parallel_line:
+      max_parallel_threshold: 20  #合并平行线阀值，在这个阀值内的平行线判断是否合并  optimize_main_lines  distance_threshold
+      min_parallel_threshold: 4  #平行线间距不大于这个阀值直接合并
+      limit_length: 40  #先合并不大于这个阀值的平行线
+      max_distance_threshold: 15  #线段拼接的最大间隙距离
+      color_ratio: 0.4
+    repair_intersect_line:
+      max_gap_threshold: 15
+      color_ratio: 0
+    repair_broken_line:
+      max_gap_threshold: 20
+    is_line_linked_box:
+      offset: 0 #器元框左上和右下扩张的像素值
+      offset_for_DGGROUND: 9 #接地刀闸左上和右下扩张的像素值
+      line_gap_threshold: 10  #水平竖直线段上下延长的阈值
+"120110":  # 天津东丽电网
+  zhu:
+    line_length_threshold: 6 #检测长度大于阀值的线段
+    noise_rect_kernel: 60
+    isolate_small_line_threshold: 10  #孤立小线段阀值
+    merge_parallel_line: #合并平行线
+      max_parallel_threshold: 20 #合并平行线阀值，在这个阀值内的平行线判断是否合并  optimize_main_lines  distance_threshold
+      min_parallel_threshold: 4  #平行线间距不大于这个阀值直接合并
+      max_distance_threshold: 15  # 线段拼接的最大间隙距离
+      color_ratio: 0.6   #白色色域占比最大矩形框
+    get_bus_main_from_thicker_line:
+      kernel_for_morphology: 13   #形态学操作核大小
+      kernel_for_remove_rect: 50
+      ratio_of_busrect_w_and_imgw: 0.10 #母线外接矩形框宽高必须大于图片宽高的百分比
+      retio_of_busrect_w_and_h: 0.75  #母线外接矩形框宽高的比例 用于保证母线外接矩形框的细长
+      iretations_for_close1: 0  #闭操作次数 用于填充母线中的空洞
+      iretations_for_open: 10  #开操作次数 去除细线留下母线
+      iretations_for_close2: 10
+      offset_for_busrect_w_h: 0  # 调整矩形框右上位置
+      offset_for_busrect_left_top: -5  # 调整矩形框左下位置
+    is_line_linked_box:
+      offset: 0 #器元框左上和右下扩张的像素值
+      offset_for_DGGROUND: 2 #接地刀闸左上和右下扩张的像素值
+      line_gap_threshold: 5  #水平竖直线段上下延长的阈值
+    repair_intersect_line: #修正有间隙的水平与垂直线
+      output_line_ratio: 0.01  #出线头长度占线长度比例，如果不大于这个阀值将去除 1/100
+    get_main_buses:
+      prefix: ['^\d+(\.\d+)?KV']  #前缀为数字+kv(此处的KV需要识别的时候不敏感匹配)
+      suffix: ['母线','母']     #后缀为母线或母
+      num_of_selected_buses: 10   #从T结点数量和长度交集筛选的待选母线数量
+      distance_between_Mpower_text_box_and_buses: 500  #母线文本框和线段端点、间隔距离
+    repair_line_by_box: #修复box截断的线段
+      max_gap_threshold: 8  #线段与Box的间隙阀值
+      parallel_threshold: 10  #线段间的平行阀值
+    remove_text:
+      special_words: [ '-?\d*\.?\d+' ] #Box包含指定的文字时，只保留线的颜色，如果为空Box抹黑
+      line_colors: [ 'yellow' ] #提取指定颜色的线段
+  pei:
+    noise_rect_kernel: 25
+    isolate_small_line_threshold: 10
+    remove_text:
+      special_words: ['SY', 'YY', '-?\d*\.?\d+'] #Box包含指定的文字时，只保留线的颜色，如果为空Box抹黑
+      line_colors: ['blue', 'cyan'] #提取指定颜色的线段
+    merge_parallel_line:
+      max_parallel_threshold: 20  #合并平行线阀值，在这个阀值内的平行线判断是否合并  optimize_main_lines  distance_threshold
+      min_parallel_threshold: 4  #平行线间距不大于这个阀值直接合并
+      max_distance_threshold: 10  #线段拼接的最大间隙距离
+      limit_length: 40  #合并不大于这个阀值的平行线
+      color_ratio: 0.4
+    repair_line_by_box: #修复box截断的线段
+      max_gap_threshold: 4  #线段与Box的间隙阀值  0
+      parallel_threshold: 4  # 线段间的平行阀值   0
+    is_line_linked_box:
+      offset: 0 #器元框左上和右下扩张的像素值
+      offset_for_DGGROUND: 9 #接地刀闸左上和右下扩张的像素值
+      line_gap_threshold: 10  #水平竖直线段上下延长的阈值

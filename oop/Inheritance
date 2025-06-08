@@ -1,0 +1,37 @@
+class Employee():
+    def __init__(self, name, id):
+        self.name = name
+        self.id = id
+    def print_info(self):
+        print(f'姓名：{self.name}\n工号：{self.id}')
+
+
+class FullTimeEmployee(Employee):
+    def __init__(self, name, id, monthly_salary):
+        super().__init__(name, id)
+        self.monthly_salary = monthly_salary
+    def calculate_monthly_pay(self):
+        return self.monthly_salary
+    def print_info(self):
+        super().print_info()
+        print(f'月薪：{self.monthly_salary}')
+    
+
+class PartTimeEmployee(Employee):
+    def __init__(self, name, id,dayly_salary, work_days):
+        super().__init__(name, id)
+        self.daily_salary = dayly_salary
+        self.work_days = work_days
+    def calculate_monthly_pay(self):
+        return self.daily_salary * self.work_days
+    def print_info(self):
+        super().print_info()
+        print(f'日薪：{self.daily_salary}\n出勤天数：{self.work_days}\n月薪：{self.calculate_monthly_pay()}')
+
+if __name__=='__main__':
+    pat1 = PartTimeEmployee('xiaoming', '202100000001', dayly_salary=500, work_days=20)
+    full1 = FullTimeEmployee('lili', '202100000002', monthly_salary=10000)
+    pat1.print_info()
+    full1.print_info()
+
+

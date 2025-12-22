@@ -28,7 +28,7 @@ class Solution:
                 start_y = sub_x - start_x
             sub_x -= 2
             sub_num += 1
-        for i in range(n):
+        for i in range(n):  # 每个元素赋值 不能直接用matrix = matrix1 因为是引用赋值
             for j in range(n):
                 matrix[i][j] = matrix1[i][j]
         # print(f"rotate matrix:")
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     print_matrix(matrix2)
     i = 0
     solution = Solution()
-    solution.rotate(matrix2)
+    solution.rotate_for_offic(matrix2)
     print(f"rotate matrix:")
     print_matrix(matrix2)
 
